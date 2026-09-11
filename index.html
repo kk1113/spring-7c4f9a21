@@ -1970,6 +1970,533 @@
       }
     }
 
+  
+    /* =========================
+       POLISH + PET EVOLUTION
+       ========================= */
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .game-card,
+    #letter,
+    .quest-window,
+    .quest-summary,
+    .quest-summary-active,
+    .sprite-frame,
+    .mini-note,
+    .add-objective-panel {
+      overflow-wrap: anywhere;
+    }
+
+    #petArea {
+      width: 100%;
+      display: none;
+      place-items: center;
+    }
+
+    .pet-party {
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+      margin: 0 auto;
+    }
+
+    .pet-wrap,
+    .companion-wrap {
+      position: relative;
+      display: inline-grid;
+      justify-items: center;
+      align-items: end;
+      text-align: center;
+      isolation: isolate;
+    }
+
+    .pet-sprite-slot {
+      width: 170px;
+      height: 170px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+    }
+
+    .companion-sprite-slot {
+      width: 102px;
+      height: 132px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+    }
+
+    .pet-ground-shadow,
+    .companion-ground-shadow {
+      position: absolute;
+      z-index: -1;
+      left: 50%;
+      bottom: 10px;
+      border-radius: 999px;
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
+
+    .pet-ground-shadow {
+      width: 118px;
+      height: 18px;
+      background: rgba(67, 44, 55, 0.15);
+      filter: blur(9px);
+    }
+
+    .companion-ground-shadow {
+      width: 74px;
+      height: 14px;
+      background: rgba(67, 44, 55, 0.12);
+      filter: blur(8px);
+    }
+
+    #petSprite,
+    #petCompanionSprite {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      user-select: none;
+      border: 0;
+      outline: 0;
+      box-shadow: none;
+    }
+
+    #petSprite {
+      filter: drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      transform-origin: center bottom;
+    }
+
+    #petCompanionSprite {
+      filter: drop-shadow(0 10px 12px rgba(66, 38, 20, 0.12));
+      transform-origin: center bottom;
+    }
+
+    .pet-wrap.stage-bean .pet-sprite-slot {
+      width: 150px;
+      height: 150px;
+    }
+
+    .pet-wrap.stage-horntail .pet-sprite-slot {
+      width: 185px;
+      height: 180px;
+    }
+
+    .pet-wrap.stage-lucid .pet-sprite-slot {
+      width: 132px;
+      height: 150px;
+    }
+
+    .pet-wrap.stage-guardian .pet-sprite-slot {
+      width: 165px;
+      height: 150px;
+    }
+
+    .pet-label {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      z-index: 3;
+      padding: 4px 9px;
+      border: 3px solid var(--brown);
+      border-radius: 999px;
+      background: linear-gradient(#bdf57d, #7dd548);
+      box-shadow: 0 3px 0 var(--brown-dark);
+      font-size: 12px;
+      font-weight: 900;
+      color: #2d531a;
+      text-shadow: none;
+    }
+
+    .pet-name,
+    .companion-name {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #7c4661;
+      text-shadow: 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .companion-name {
+      color: #7a4f61;
+    }
+
+    .pet-wrap.pet-level-pulse .pet-sprite-slot {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .pet-wrap.pet-level-pulse .pet-sprite-slot::before,
+    .pet-wrap.pet-level-pulse .pet-sprite-slot::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(.58);
+    }
+
+    .pet-wrap.pet-level-pulse .pet-sprite-slot::before {
+      width: 92%;
+      aspect-ratio: 1;
+      background:
+        radial-gradient(
+          circle,
+          rgba(255, 250, 196, .92) 0%,
+          rgba(255, 227, 116, .72) 28%,
+          rgba(124, 233, 255, .38) 57%,
+          rgba(124, 233, 255, 0) 76%
+        );
+      filter: blur(2px);
+      animation: petCircularAura .86s ease-out;
+    }
+
+    .pet-wrap.pet-level-pulse .pet-sprite-slot::after {
+      width: 74%;
+      aspect-ratio: 1;
+      border: 3px solid rgba(255, 243, 164, .82);
+      box-shadow:
+        0 0 12px rgba(255, 229, 126, .7),
+        0 0 22px rgba(105, 226, 255, .42);
+      animation: petCircularRing .86s ease-out;
+    }
+
+    .pet-wrap.pet-level-pulse #petSprite {
+      animation: petLevelGlow .86s ease-out;
+    }
+
+    .pet-wrap.pet-evolution-flash .pet-sprite-slot {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .pet-wrap.pet-evolution-flash .pet-sprite-slot::before,
+    .pet-wrap.pet-evolution-flash .pet-sprite-slot::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      pointer-events: none;
+      z-index: -1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .pet-wrap.pet-evolution-flash .pet-sprite-slot::before {
+      width: 108%;
+      aspect-ratio: 1;
+      background:
+        radial-gradient(
+          circle,
+          rgba(255, 255, 255, .98) 0%,
+          rgba(255, 244, 185, .95) 18%,
+          rgba(255, 223, 104, .82) 38%,
+          rgba(122, 233, 255, .42) 62%,
+          rgba(122, 233, 255, 0) 80%
+        );
+      filter: blur(2px);
+      animation: petEvolutionAura 0.62s ease-out forwards;
+    }
+
+    .pet-wrap.pet-evolution-flash .pet-sprite-slot::after {
+      width: 82%;
+      aspect-ratio: 1;
+      border: 4px solid rgba(255, 248, 196, .95);
+      box-shadow:
+        0 0 16px rgba(255, 233, 128, .9),
+        0 0 28px rgba(115, 231, 255, .42);
+      animation: petEvolutionRing 0.62s ease-out forwards;
+    }
+
+    .pet-wrap.pet-evolution-flash #petSprite {
+      animation: petEvolutionReveal 0.62s ease-out forwards;
+    }
+
+    .companion-level-pulse {
+      animation: companionLevelPulse 0.65s ease-out;
+    }
+
+    .companion-evolution-pulse {
+      animation: companionEvolutionPulse 0.78s ease-out;
+    }
+
+    @keyframes petCircularAura {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.52);
+      }
+      28% {
+        opacity: .95;
+        transform: translate(-50%, -50%) scale(.82);
+      }
+      68% {
+        opacity: .62;
+        transform: translate(-50%, -50%) scale(1.04);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.18);
+      }
+    }
+
+    @keyframes petCircularRing {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.56);
+      }
+      30% {
+        opacity: .95;
+        transform: translate(-50%, -50%) scale(.84);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+    }
+
+    @keyframes petLevelGlow {
+      0%, 100% {
+        filter: drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+      42% {
+        filter:
+          brightness(1.08)
+          drop-shadow(0 0 9px rgba(255, 236, 145, .7))
+          drop-shadow(0 0 14px rgba(112, 228, 255, .35))
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+    }
+
+    @keyframes petEvolutionAura {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.46);
+      }
+      36% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(.92);
+      }
+      52% {
+        opacity: .98;
+        transform: translate(-50%, -50%) scale(1.08);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.24);
+      }
+    }
+
+    @keyframes petEvolutionRing {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.52);
+      }
+      42% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(.98);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.18);
+      }
+    }
+
+    @keyframes petEvolutionReveal {
+      0% {
+        opacity: 1;
+        filter:
+          brightness(1)
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+      28% {
+        opacity: .18;
+        filter:
+          brightness(1.38)
+          saturate(1.14)
+          drop-shadow(0 0 12px rgba(255, 246, 196, .95))
+          drop-shadow(0 0 20px rgba(126, 235, 255, .55))
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+      50% {
+        opacity: 0;
+        filter:
+          brightness(1.6)
+          saturate(1.18)
+          drop-shadow(0 0 18px rgba(255, 249, 225, 1))
+          drop-shadow(0 0 30px rgba(126, 235, 255, .65))
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+      76% {
+        opacity: .78;
+        filter:
+          brightness(1.2)
+          drop-shadow(0 0 8px rgba(255, 231, 120, .55))
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+      100% {
+        opacity: 1;
+        filter:
+          brightness(1)
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+    }
+
+    @keyframes companionLevelPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 10px 12px rgba(66, 38, 20, 0.12));
+      }
+      50% {
+        transform: scale(1.015);
+        filter:
+          brightness(1.035)
+          drop-shadow(0 0 5px rgba(255, 202, 226, 0.34))
+          drop-shadow(0 10px 12px rgba(66, 38, 20, 0.12));
+      }
+    }
+
+    @keyframes companionEvolutionPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 10px 12px rgba(66, 38, 20, 0.12));
+      }
+      45% {
+        transform: scale(1.025);
+        filter:
+          brightness(1.07)
+          drop-shadow(0 0 7px rgba(255, 216, 237, 0.48))
+          drop-shadow(0 10px 12px rgba(66, 38, 20, 0.12));
+      }
+    }
+
+    .evolution-banner {
+      position: fixed;
+      left: 50%;
+      top: 18%;
+      transform: translateX(-50%);
+      z-index: 95;
+      padding: 10px 16px;
+      border: 3px solid var(--brown);
+      border-radius: 16px;
+      background: linear-gradient(#fff5b8, #ffd86d);
+      box-shadow:
+        0 5px 0 var(--brown-dark),
+        0 0 26px rgba(255, 220, 84, .6);
+      color: #7b471a;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+      animation: evolutionBannerIn 1s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes evolutionBannerIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(6px) scale(.97);
+      }
+      20%, 75% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-3px) scale(1);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .scene-box {
+        min-height: 192px;
+      }
+
+      .pet-party {
+        gap: 10px;
+      }
+
+      .pet-sprite-slot {
+        width: 142px;
+        height: 142px;
+      }
+
+      .companion-sprite-slot {
+        width: 82px;
+        height: 104px;
+      }
+
+      .pet-wrap.stage-bean .pet-sprite-slot {
+        width: 124px;
+        height: 124px;
+      }
+
+      .pet-wrap.stage-horntail .pet-sprite-slot {
+        width: 156px;
+        height: 144px;
+      }
+
+      .pet-wrap.stage-lucid .pet-sprite-slot {
+        width: 112px;
+        height: 124px;
+      }
+
+      .pet-wrap.stage-guardian .pet-sprite-slot {
+        width: 128px;
+        height: 120px;
+      }
+
+      .pet-label {
+        top: -10px;
+        padding: 3px 8px;
+        border-width: 2px;
+        font-size: 10px;
+      }
+
+      .pet-name,
+      .companion-name {
+        margin-top: 4px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .pet-party {
+        gap: 6px;
+      }
+
+      .pet-sprite-slot {
+        width: 126px;
+        height: 126px;
+      }
+
+      .companion-sprite-slot {
+        width: 72px;
+        height: 96px;
+      }
+
+      .pet-wrap.stage-horntail .pet-sprite-slot {
+        width: 144px;
+        height: 132px;
+      }
+
+      .pet-wrap.stage-guardian .pet-sprite-slot {
+        width: 118px;
+        height: 114px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1997,11 +2524,27 @@
         </div>
 
         <div id="petArea">
-          <div class="pet-wrap">
-            <div class="pet-ground-shadow"></div>
-            <img id="petSprite" src="pet-headphones.png" alt="Bean, the pink headphone companion" />
-            <div class="pet-label" id="petLevelLabel">Bean • Lv. 1</div>
-            <div class="pet-name">Bean</div>
+          <div class="pet-party">
+            <div class="pet-wrap stage-bean" id="petWrap">
+              <div class="pet-ground-shadow"></div>
+
+              <div class="pet-sprite-slot">
+                <img id="petSprite" src="pet-headphones.png" alt="Bean, the pink headphone companion" />
+              </div>
+
+              <div class="pet-label" id="petLevelLabel">Bean • Lv. 1</div>
+              <div class="pet-name" id="petNameLabel">Bean</div>
+            </div>
+
+            <div class="companion-wrap" id="companionWrap">
+              <div class="companion-ground-shadow"></div>
+
+              <div class="companion-sprite-slot">
+                <img id="petCompanionSprite" src="gf-maple.png" alt="Bri Bri companion" />
+              </div>
+
+              <div class="companion-name">Bri Bri</div>
+            </div>
           </div>
         </div>
       </div>
@@ -2065,8 +2608,8 @@
 
           <aside class="letter-side">
             <div class="sprite-frame">
-              <img id="gfSprite" src="gf-maple.png" alt="birthday girl character" />
-              <div class="sprite-caption">Birthday Heroine ✨</div>
+              <img id="gfSprite" src="gf-maple.png" alt="Bri Bri character" />
+              <div class="sprite-caption">Bri Bri ✨</div>
             </div>
 
             <div class="mini-note">
@@ -2200,12 +2743,17 @@
     let petLevel = 1;
     let hatched = false;
     let questWasComplete = false;
+    let currentEvolutionName = "Bean";
 
     const egg = document.getElementById("egg");
     const eggArea = document.getElementById("eggArea");
     const petArea = document.getElementById("petArea");
     const petSprite = document.getElementById("petSprite");
+    const petWrap = document.getElementById("petWrap");
+    const petCompanionSprite = document.getElementById("petCompanionSprite");
+    const companionWrap = document.getElementById("companionWrap");
     const petLevelLabel = document.getElementById("petLevelLabel");
+    const petNameLabel = document.getElementById("petNameLabel");
     const dialogue = document.getElementById("dialogue");
     const mainSubheading = document.getElementById("mainSubheading");
     const sceneBox = document.getElementById("sceneBox");
@@ -2410,6 +2958,7 @@
       objectiveAddMessage.classList.add("success");
 
       buildObjectiveList();
+    applyEvolutionStage(getEvolutionStage(petLevel), true);
     }
 
     function removeCustomObjective(index) {
@@ -2474,36 +3023,155 @@
         eggArea.style.display = "none";
         petArea.style.display = "grid";
         controls.style.display = "flex";
-        dialogue.textContent = "Bean appeared! ✨";
+        dialogue.textContent = "Bean appeared! Train and feed Bean to help it grow and evolve! ✨";
         sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 16);
       }, 1300);
 
       setTimeout(() => {
-        dialogue.textContent = "Train or feed your pet. Reach Lv. 10 to unlock your letter! 🎂";
-      }, 2350);
+        dialogue.textContent = "Train +5 or feed +3. Reach Lv. 10 to unlock your letter, then keep going to evolve Bean! 🎂";
+      }, 3400);
     }
 
     function trainPet() {
-      increasePetLevel(2, "Training complete! +2 levels 💪✨");
+      increasePetLevel(5, `${currentEvolutionName} trained hard! +5 LV 💪✨`);
     }
 
     function feedPet() {
-      increasePetLevel(1, "Yum! +1 level 🍬✨");
+      increasePetLevel(3, `${currentEvolutionName} gained strength! +3 LV 🍬✨`);
+    }
+
+    function getEvolutionStage(level) {
+      if (level >= 1000) {
+        return {
+          key: "guardian",
+          name: "Guardian Slime (Max Luck)",
+          sprite: "Guardian_Slime.png",
+          alt: "Guardian Slime evolution"
+        };
+      }
+
+      if (level >= 500) {
+        return {
+          key: "lucid",
+          name: "Lucid",
+          sprite: "Lucid.png",
+          alt: "Lucid evolution"
+        };
+      }
+
+      if (level >= 100) {
+        return {
+          key: "horntail",
+          name: "Horntail",
+          sprite: "Horntail.png",
+          alt: "Horntail evolution"
+        };
+      }
+
+      return {
+        key: "bean",
+        name: "Bean",
+        sprite: "pet-headphones.png",
+        alt: "Bean, the pink headphone companion"
+      };
+    }
+
+    function applyEvolutionStage(stage, silent = false) {
+      currentEvolutionName = stage.name;
+      petSprite.src = stage.sprite;
+      petSprite.alt = stage.alt;
+
+      if (petWrap) {
+        petWrap.classList.remove("stage-bean", "stage-horntail", "stage-lucid", "stage-guardian");
+        petWrap.classList.add(`stage-${stage.key}`);
+      }
+
+      petLevelLabel.textContent = `${stage.name} • Lv. ${petLevel}`;
+      petNameLabel.textContent = stage.name;
+
+      if (!silent) {
+        showEvolutionBanner(stage.name);
+      }
+    }
+
+    function showEvolutionBanner(name) {
+      const banner = document.createElement("div");
+      banner.className = "evolution-banner";
+      banner.textContent = `Evolution! ${name} awakened!`;
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 1050);
+    }
+
+    function animatePartyLevelUp(evolved = false) {
+      if (petWrap && petSprite) {
+        petWrap.classList.remove("pet-level-pulse", "pet-evolution-flash");
+
+        void petWrap.offsetWidth;
+
+        if (evolved) {
+          petWrap.classList.add("pet-evolution-flash");
+        } else {
+          petWrap.classList.add("pet-level-pulse");
+        }
+      }
+
+      if (petCompanionSprite) {
+        petCompanionSprite.classList.remove(
+          "companion-level-pulse",
+          "companion-evolution-pulse"
+        );
+        void petCompanionSprite.offsetWidth;
+        petCompanionSprite.classList.add(
+          evolved ? "companion-evolution-pulse" : "companion-level-pulse"
+        );
+      }
+    }
+
+    function triggerEvolution(previousStage, nextStage) {
+      dialogue.textContent =
+        `Evolution! ${previousStage.name} evolved into ${nextStage.name}! ✨`;
+
+      animatePartyLevelUp(true);
+
+      setTimeout(() => {
+        applyEvolutionStage(nextStage, true);
+      }, 250);
+
+      setTimeout(() => {
+        sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 7);
+      }, 220);
+
+      setTimeout(() => {
+        if (petWrap) {
+          petWrap.classList.remove("pet-evolution-flash");
+        }
+      }, 700);
+
+      showEvolutionBanner(nextStage.name);
     }
 
     function increasePetLevel(amount, message) {
       const previousLevel = petLevel;
+      const previousStage = getEvolutionStage(previousLevel);
+
       petLevel += amount;
 
-      petLevelLabel.textContent = `Bean • Lv. ${petLevel}`;
+      const nextStage = getEvolutionStage(petLevel);
+      const evolved = previousStage.key !== nextStage.key;
+
+      petLevelLabel.textContent = `${nextStage.name} • Lv. ${petLevel}`;
+      petNameLabel.textContent = nextStage.name;
       dialogue.textContent = message;
 
-      petSprite.classList.remove("bounce", "pet-action-flash");
-      void petSprite.offsetWidth;
-      petSprite.classList.add("bounce", "pet-action-flash");
-
       showLevelUp(amount);
-      sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 8);
+
+      if (evolved) {
+        triggerEvolution(previousStage, nextStage);
+      } else {
+        animatePartyLevelUp(false);
+        applyEvolutionStage(nextStage, true);
+        sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 4);
+      }
 
       if (previousLevel < 10 && petLevel >= 10) {
         unlockLetter();
@@ -2598,10 +3266,10 @@
 
       if (petLevel >= 10) {
         envelope.style.display = "block";
-        dialogue.textContent = "Lv. 10 reached! Your special letter is unlocked 💌";
+        dialogue.textContent = `${currentEvolutionName} is ready! Your special letter is unlocked 💌`;
       } else {
         envelope.style.display = "none";
-        dialogue.textContent = "Train or feed your pet. Reach Lv. 10 to unlock your letter! 🎂";
+        dialogue.textContent = "Train +5 or feed +3. Reach Lv. 10 to unlock your letter, then keep going to evolve Bean! 🎂";
       }
 
     }
