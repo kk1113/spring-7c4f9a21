@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>Birthday Quest</title>
+
+  <style>
+    :root {
+      --brown: #5e3a21;
+      --brown-dark: #422614;
+      --gold1: #ffe487;
+      --gold2: #f7b146;
+      --cream: rgba(255, 249, 236, 0.95);
+      --pink1: #ffd6e8;
+      --pink2: #ff96be;
+      --pink3: #e76396;
+      --green1: #98de54;
+      --green2: #69b33a;
+      --text: #4a2b17;
+      --quest-blue: #4aa4dd;
+      --quest-blue-dark: #2a74a9;
+      --quest-gray: #e8e8e8;
+      --quest-gray2: #f6f6f6;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+      background: linear-gradient(to bottom, #78cbff 0%, #dff5ff 50%, #fef7fb 100%);
+    }
+
+    .bg-scene {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.04), rgba(255,255,255,0.08)),
+        url("sakura-town-bg.png") center center / cover no-repeat;
+      z-index: 0;
+      transform: scale(1.03);
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.18)),
+        radial-gradient(circle at 50% 80%, rgba(255,255,255,0.18), transparent 42%);
+      pointer-events: none;
+    }
+
+    .petal {
+      position: fixed;
+      top: -10vh;
+      z-index: 2;
+      font-size: 22px;
+      color: #ffb5cf;
+      opacity: 0.9;
+      pointer-events: none;
+      animation-name: petalFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes petalFall {
+      0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate3d(120px, 115vh, 0) rotate(300deg); opacity: 0.9; }
+    }
+
+    .game-shell {
+      position: relative;
+      z-index: 5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .game-card {
+      width: min(94vw, 520px);
+      max-height: 90vh;
+      padding: 18px 18px 20px;
+      border: 4px solid var(--brown);
+      border-radius: 22px;
+      background: var(--cream);
+      box-shadow:
+        0 7px 0 var(--brown-dark),
+        0 18px 35px rgba(0,0,0,0.24),
+        inset 0 0 0 3px rgba(255,255,255,0.65);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 2px dashed rgba(137, 88, 45, 0.24);
+      border-radius: 15px;
+      pointer-events: none;
+    }
+
+    .title-badge {
+      width: fit-content;
+      display: block;
+      text-align: center;
+      margin: -34px auto 12px;
+      padding: 9px 22px;
+      border: 3px solid var(--brown);
+      border-radius: 18px;
+      background: linear-gradient(var(--gold1), var(--gold2));
+      box-shadow: 0 4px 0 var(--brown-dark);
+      font-weight: 900;
+      color: #6b3d1a;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 0 #fff6c4;
+    }
+
+    .subheading {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+
+    .scene-box {
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    #eggArea {
+      display: grid;
+      place-items: center;
+    }
+
+    #egg {
+      width: 135px;
+      height: auto;
+      display: block;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-drag: none;
+      image-rendering: auto;
+      border: 0;
+      outline: 0;
+      box-shadow: none;
+      filter: drop-shadow(0 12px 14px rgba(62, 35, 30, 0.16));
+      animation: eggWiggle 1.5s ease-in-out infinite;
+    }
+
+    .egg-shadow {
+      width: 92px;
+      height: 13px;
+      border-radius: 50%;
+      margin-top: 7px;
+      background: rgba(63, 45, 48, 0.13);
+      filter: blur(7px);
+      transform: scaleX(1.08);
+    }
+
+    @keyframes eggWiggle {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      20% { transform: rotate(-6deg) translateY(-2px); }
+      40% { transform: rotate(5deg) translateY(0); }
+      60% { transform: rotate(-3deg) translateY(-2px); }
+      80% { transform: rotate(3deg) translateY(0); }
+    }
+
+    .egg-crack { animation: crackShake 0.12s infinite !important; }
+
+    @keyframes crackShake {
+      0% { transform: translate(0,0) rotate(0deg); }
+      25% { transform: translate(-3px,1px) rotate(-2deg); }
+      50% { transform: translate(3px,-1px) rotate(2deg); }
+      75% { transform: translate(-2px,-1px) rotate(-1deg); }
+      100% { transform: translate(2px,1px) rotate(1deg); }
+    }
+
+    #petArea {
+      display: none;
+      place-items: center;
+    }
+
+    .pet-wrap {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      text-align: center;
+      isolation: isolate;
+    }
+
+    .pet-ground-shadow {
+      position: absolute;
+      z-index: -1;
+      left: 50%;
+      bottom: 2px;
+      width: 112px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(67, 44, 55, 0.15);
+      filter: blur(8px);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    #petSprite {
+      width: 150px;
+      max-width: 42vw;
+      cursor: pointer;
+      user-select: none;
+      border: 0;
+      outline: 0;
+      box-shadow: none;
+      filter: drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+    }
+
+    .pet-name {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #7c4661;
+      text-shadow: 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .pet-label {
+      position: absolute;
+      top: -16px;
+      right: -12px;
+      padding: 4px 8px;
+      border: 3px solid var(--brown);
+      border-radius: 999px;
+      background: linear-gradient(#bdf57d, #7dd548);
+      box-shadow: 0 3px 0 var(--brown-dark);
+      font-size: 12px;
+      font-weight: 900;
+      color: #2d531a;
+    }
+
+    .bounce { animation: petBounce 0.45s ease; }
+
+    @keyframes petBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-18px) scale(1.05); }
+      70% { transform: translateY(3px) scale(0.98); }
+    }
+
+    #dialogue {
+      position: relative;
+      min-height: 78px;
+      margin-bottom: 14px;
+      padding: 15px 18px;
+      border: 3px solid var(--brown);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.93);
+      box-shadow:
+        0 4px 0 var(--brown-dark),
+        inset 0 0 0 3px rgba(255,236,190,0.45);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    #dialogue::before {
+      content: "💬";
+      position: absolute;
+      left: -8px;
+      top: -15px;
+      font-size: 22px;
+    }
+
+    #controls {
+      display: none;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .game-btn {
+      border: 3px solid var(--brown);
+      min-width: 145px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #6a3818;
+      cursor: pointer;
+      background: linear-gradient(var(--gold1), var(--gold2));
+      box-shadow:
+        0 5px 0 var(--brown-dark),
+        inset 0 2px 0 rgba(255,255,255,0.6);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
+    }
+
+    .game-btn:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+    }
+
+    .game-btn:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 var(--brown-dark),
+        inset 0 1px 0 rgba(255,255,255,0.45);
+    }
+
+    .game-btn.alt { background: linear-gradient(var(--pink1), var(--pink2)); }
+    .game-btn.blue {
+      color: #1a4263;
+      background: linear-gradient(#bce9ff, #6fc4f2);
+    }
+
+    #envelope {
+      display: none;
+      width: 108px;
+      height: 84px;
+      margin: 18px auto 4px;
+      border: 4px solid var(--brown);
+      border-radius: 12px;
+      background: linear-gradient(#fffaf0, #ffe3ef);
+      box-shadow: 0 6px 0 var(--brown-dark);
+      position: relative;
+      cursor: pointer;
+      animation: envelopeFloat 1.8s ease-in-out infinite;
+    }
+
+    #envelope::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      right: 9px;
+      top: 11px;
+      bottom: 16px;
+      background:
+        linear-gradient(135deg, transparent 48%, #ff8fb9 49% 53%, transparent 54%),
+        linear-gradient(225deg, transparent 48%, #ff8fb9 49% 53%, transparent 54%);
+      opacity: 0.78;
+    }
+
+    #envelope::after {
+      content: "♥";
+      position: absolute;
+      left: 50%;
+      top: 47%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      color: #ea6b9c;
+      text-shadow: 0 1px 0 #fff;
+    }
+
+    @keyframes envelopeFloat {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-7px) rotate(1deg); }
+    }
+
+    #letter {
+      display: none;
+      position: relative;
+      width: 100%;
+      margin-top: 0;
+      padding: 18px;
+      border: 4px solid var(--brown);
+      border-radius: 18px;
+      background:
+        linear-gradient(rgba(255,255,255,0.9), rgba(255,245,232,0.98)),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0 27px,
+          rgba(213, 151, 104, 0.12) 27px 28px
+        );
+      box-shadow: 0 7px 0 var(--brown-dark);
+      animation: letterOpen 0.4s ease both;
+      max-height: calc(90vh - 92px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+
+    @keyframes letterOpen {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .letter-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 0.95fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .letter-main h2 {
+      margin: 0 0 12px;
+      text-align: center;
+      color: #d65e92;
+      font-size: 26px;
+    }
+
+    .letter-main p {
+      line-height: 1.65;
+      margin: 0 0 12px;
+    }
+
+    .letter-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding-top: 8px;
+    }
+
+    .sprite-frame {
+      width: 100%;
+      padding: 10px;
+      border: 3px solid var(--brown);
+      border-radius: 16px;
+      background: linear-gradient(#fff8ee, #ffe7f0);
+      box-shadow: 0 4px 0 var(--brown-dark);
+      text-align: center;
+    }
+
+    #gfSprite {
+      width: 100%;
+      max-width: 150px;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 5px 0 rgba(66, 38, 20, 0.18));
+    }
+
+    .sprite-caption {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #80401d;
+    }
+
+    .mini-note {
+      width: 100%;
+      padding: 10px 12px;
+      border: 3px solid var(--brown);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 4px 0 var(--brown-dark);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .letter-quest-btn {
+      width: 100%;
+      min-width: 0;
+      margin-top: 2px;
+    }
+
+
+    .letter-side {
+      position: relative;
+    }
+
+    .pet-home-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      left: auto;
+      width: 48px;
+      height: 48px;
+      padding: 5px;
+      border: 3px solid var(--brown);
+      border-radius: 12px;
+      background: linear-gradient(#fff7d0, #f3c763);
+      box-shadow:
+        0 4px 0 var(--brown-dark),
+        inset 0 2px 0 rgba(255,255,255,0.7);
+      cursor: pointer;
+      z-index: 3;
+      transition: transform .1s ease, filter .1s ease;
+    }
+
+    .pet-home-btn:hover {
+      transform: translateY(-1px) scale(1.04);
+      filter: brightness(1.05);
+    }
+
+    .pet-home-btn:active {
+      transform: translateY(3px);
+      box-shadow:
+        0 1px 0 var(--brown-dark),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .pet-home-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* QUEST MODAL */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 18, 16, 0.55);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .quest-window {
+      width: min(96vw, 760px);
+      height: min(760px, calc(100dvh - 28px));
+      max-height: calc(100dvh - 28px);
+      border: 4px solid #6a6a6a;
+      border-radius: 14px;
+      background: linear-gradient(#fefefe, #ebebeb);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      overflow: hidden;
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .quest-window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px solid rgba(255,255,255,0.6);
+      pointer-events: none;
+    }
+
+    /* KEEP QUEST CHROME VISIBLE */
+    .quest-topbar,
+    .quest-tabs,
+    .quest-footer {
+      flex: 0 0 auto;
+    }
+
+    .quest-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      color: white;
+      font-weight: 900;
+      background: linear-gradient(#7c7c7c, #4d4d4d);
+      border-bottom: 2px solid #2f2f2f;
+    }
+
+    .window-x {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #533012;
+      border-radius: 6px;
+      background: linear-gradient(#fff6a8, #f3b144);
+      font-weight: 900;
+      color: #6b3112;
+      cursor: pointer;
+    }
+
+    .quest-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 8px 10px 0;
+      background: #d3d3d3;
+      border-bottom: 1px solid #bcbcbc;
+    }
+
+    .quest-tab {
+      padding: 6px 10px;
+      border: 2px solid #8f8f8f;
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+      font-size: 12px;
+      font-weight: 900;
+      background: linear-gradient(#f2f2f2, #cecece);
+      color: #666;
+    }
+
+    .quest-tab.active {
+      color: white;
+      background: linear-gradient(#ffc84b, #ef9b23);
+      border-color: #c97a00;
+    }
+
+    .quest-body {
+      display: block;
+
+      /* Keep the footer visible when the checklist grows. */
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quest-left {
+      background: linear-gradient(#f8f8f8, #eeeeee);
+      border-right: 2px solid #c8c8c8;
+      padding: 10px;
+    }
+
+    .quest-search {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .quest-search input {
+      flex: 1;
+      height: 30px;
+      border: 2px solid #a9bf77;
+      border-radius: 6px;
+      padding: 0 10px;
+      background: #f7fff0;
+      font-weight: 700;
+      color: #4b4b4b;
+    }
+
+    .search-btn {
+      border: 2px solid #d38b12;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(#ffc54b, #ef9721);
+    }
+
+    .quest-section {
+      margin-bottom: 10px;
+      border: 1px solid #d9d9d9;
+      background: white;
+    }
+
+    .section-header {
+      padding: 6px 8px;
+      background: linear-gradient(#4484bb, #2f6694);
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .quest-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-top: 1px solid #ececec;
+      font-size: 14px;
+      background: linear-gradient(#ffffff, #f7f7f7);
+    }
+
+    .quest-item.selected {
+      background: linear-gradient(#fff6cf, #ffe59e);
+    }
+
+    .badge-mini {
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 6px;
+      border-radius: 999px;
+      color: white;
+      background: #f39b1f;
+    }
+
+
+    .left-progress-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-top: 1px solid #ececec;
+      background: linear-gradient(#ffffff, #f7f7f7);
+      font-size: 13px;
+      font-weight: 700;
+      color: #4f4f4f;
+      transition: background .2s ease, color .2s ease, opacity .2s ease;
+    }
+
+    .left-progress-item:first-child {
+      border-top: 0;
+    }
+
+    .left-progress-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #a9a9a9;
+      border-radius: 4px;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: white;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
+      transition: all .2s ease;
+    }
+
+    .left-progress-item.complete {
+      color: #6d6d6d;
+      background: linear-gradient(#f7fff0, #edf8df);
+    }
+
+    .left-progress-item.complete .left-progress-check {
+      border-color: #4e9f35;
+      background: linear-gradient(#91d95e, #5aad38);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.45),
+        0 0 7px rgba(86, 174, 55, .25);
+    }
+
+    .left-progress-item.complete .left-progress-label {
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+      opacity: .75;
+    }
+
+    .quest-right {
+      width: 100%;
+      background: linear-gradient(#fafafa, #efefef);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quest-header-card {
+      border: 2px solid var(--quest-blue-dark);
+      border-radius: 12px;
+      background: linear-gradient(#65bff5, #3798d9);
+      color: white;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .quest-header-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .quest-header-card p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .quest-icon-box {
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px;
+      text-align: center;
+      align-self: stretch;
+      display: grid;
+      place-items: center;
+      font-size: 40px;
+    }
+
+    .quest-summary {
+      border: 2px solid #c9c9c9;
+      border-radius: 10px;
+      background: linear-gradient(#ffffff, #f3f3f3);
+      padding: 12px;
+    }
+
+
+    .quest-summary-active {
+      margin: 10px 0 12px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 0 rgba(0,0,0,.08);
+    }
+
+    .quest-summary-active .section-header {
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+
+    .quest-summary-active .quest-item {
+      border-top: 0;
+      font-size: 13px;
+    }
+
+    .quest-summary-title {
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 900;
+      color: #4a7aa1;
+      margin-bottom: 10px;
+      text-shadow: 0 1px 0 white;
+    }
+
+    .quest-summary p {
+      margin: 0 0 10px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+
+    .add-objective-panel {
+      margin: 12px 0 10px;
+      padding: 10px;
+      border: 2px solid #a7a7a7;
+      border-radius: 10px;
+      background: linear-gradient(#f9f9f9, #ececec);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.9),
+        0 2px 0 rgba(120,120,120,.18);
+    }
+
+    .add-objective-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 7px;
+      color: #4c6f8b;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    #objectiveLimitText {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border: 1px solid #a4b9c8;
+      border-radius: 999px;
+      background: #edf8ff;
+      color: #3676a4;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .add-objective-controls {
+      display: flex;
+      gap: 7px;
+    }
+
+    #newObjectiveInput {
+      min-width: 0;
+      flex: 1;
+      height: 34px;
+      padding: 0 10px;
+      border: 2px solid #9eb571;
+      border-radius: 7px;
+      outline: none;
+      background: #fbfff4;
+      color: #454545;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    #newObjectiveInput:focus {
+      border-color: #64a73e;
+      box-shadow:
+        0 0 0 3px rgba(115, 192, 69, .16),
+        inset 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    #addObjectiveButton {
+      flex: 0 0 auto;
+      min-width: 70px;
+      height: 34px;
+      border: 2px solid #cc8610;
+      border-radius: 7px;
+      background: linear-gradient(#ffd25f, #efa128);
+      box-shadow:
+        0 3px 0 #9f650a,
+        inset 0 1px 0 rgba(255,255,255,.7);
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    #addObjectiveButton:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 #9f650a,
+        inset 0 1px 0 rgba(255,255,255,.6);
+    }
+
+    #addObjectiveButton:disabled {
+      opacity: .45;
+      cursor: default;
+      filter: grayscale(.45);
+    }
+
+    .objective-add-message {
+      min-height: 14px;
+      margin-top: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #7b7b7b;
+    }
+
+    .objective-add-message.error {
+      color: #bf4f4f;
+    }
+
+    .objective-add-message.success {
+      color: #4f913b;
+    }
+
+    .objective.custom-objective {
+      position: relative;
+      padding-right: 37px;
+      background: linear-gradient(#fffef6, #fff9df);
+    }
+
+    .remove-objective-btn {
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      width: 23px;
+      height: 23px;
+      transform: translateY(-50%);
+      border: 1px solid #c98b79;
+      border-radius: 6px;
+      background: linear-gradient(#fff1ed, #f3c1b4);
+      color: #a34531;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .remove-objective-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .left-progress-item.custom-progress {
+      background: linear-gradient(#fffef8, #fff9e7);
+    }
+
+    @media (max-width: 520px) {
+      .add-objective-controls {
+        align-items: stretch;
+      }
+
+      #addObjectiveButton {
+        min-width: 62px;
+      }
+    }
+
+    .objective-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .objective {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 9px;
+      border: 1px solid #dddddd;
+      border-radius: 8px;
+      background: linear-gradient(#ffffff, #f8f8f8);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .objective input {
+      width: 18px;
+      height: 18px;
+      accent-color: #53b03d;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .objective.done span {
+      text-decoration: line-through;
+      color: #7a7a7a;
+    }
+
+    .quest-progress-wrap {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #5c5c5c;
+    }
+
+    .progress-bar {
+      margin-top: 6px;
+      width: 100%;
+      height: 16px;
+      border: 2px solid #8f8f8f;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e5e5e5;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(#a9ef5e, #59b533);
+      transition: width 0.25s ease;
+    }
+
+    .quest-reward {
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d6e7bd;
+      background: linear-gradient(#f7ffe8, #eef9d5);
+      font-size: 13px;
+      font-weight: 800;
+      color: #4b6121;
+    }
+
+    .quest-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #dfdfdf;
+      border-top: 2px solid #b7b7b7;
+    }
+
+    .quest-status {
+      font-size: 13px;
+      font-weight: 900;
+      color: #606060;
+    }
+
+    .quest-footer-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .footer-btn {
+      border: 2px solid #8b7b27;
+      border-radius: 8px;
+      min-width: 98px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(#bddf52, #87b21d);
+      cursor: pointer;
+    }
+
+    .footer-btn.secondary {
+      border-color: #cb8611;
+      background: linear-gradient(#ffc850, #ef9d25);
+    }
+
+#questCompleteMessage {
+      display: none;
+      position: relative;
+      margin-top: 10px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 3px solid #d59a18;
+      background:
+        linear-gradient(135deg, #fff6b7 0%, #ffe27a 45%, #fff4bd 100%);
+      color: #8c5510;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: .2px;
+      box-shadow:
+        0 5px 0 #a86c10,
+        0 0 0 4px rgba(255, 226, 101, .22),
+        0 0 24px rgba(255, 216, 74, .55),
+        inset 0 2px 0 rgba(255,255,255,.75);
+      overflow: visible;
+    }
+
+    #questCompleteMessage.quest-complete-pop {
+      display: block;
+      animation:
+        questCompletePop .62s cubic-bezier(.2, 1.45, .35, 1) both,
+        questCompleteGlow 1.45s ease-in-out .62s infinite;
+    }
+
+    #questCompleteMessage.quest-complete-pop::before,
+    #questCompleteMessage.quest-complete-pop::after {
+      content: "✨";
+      position: absolute;
+      top: 50%;
+      font-size: 24px;
+      pointer-events: none;
+      animation: questCompleteSpark 1.1s ease-out infinite;
+    }
+
+    #questCompleteMessage.quest-complete-pop::before {
+      left: -15px;
+      transform: translateY(-50%);
+    }
+
+    #questCompleteMessage.quest-complete-pop::after {
+      right: -15px;
+      transform: translateY(-50%);
+      animation-delay: .28s;
+    }
+
+    @keyframes questCompletePop {
+      0% {
+        opacity: 0;
+        transform: scale(.72) translateY(16px);
+      }
+      55% {
+        opacity: 1;
+        transform: scale(1.08) translateY(-4px);
+      }
+      78% {
+        transform: scale(.97) translateY(1px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes questCompleteGlow {
+      0%, 100% {
+        box-shadow:
+          0 5px 0 #a86c10,
+          0 0 0 4px rgba(255, 226, 101, .20),
+          0 0 18px rgba(255, 216, 74, .45),
+          inset 0 2px 0 rgba(255,255,255,.75);
+      }
+      50% {
+        box-shadow:
+          0 5px 0 #a86c10,
+          0 0 0 7px rgba(255, 239, 148, .34),
+          0 0 34px rgba(255, 218, 58, .92),
+          inset 0 2px 0 rgba(255,255,255,.9);
+      }
+    }
+
+    @keyframes questCompleteSpark {
+      0% {
+        opacity: 0;
+        transform: translateY(-50%) scale(.5) rotate(0deg);
+      }
+      45% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.25) rotate(18deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-50%) scale(.75) rotate(45deg);
+      }
+    }
+
+    .quest-complete-burst {
+      position: fixed;
+      z-index: 100;
+      pointer-events: none;
+      font-size: 24px;
+      animation: questCompleteBurst 1.2s ease-out forwards;
+    }
+
+    @keyframes questCompleteBurst {
+      from {
+        opacity: 1;
+        transform: translate(0, 0) scale(.7) rotate(0deg);
+      }
+      to {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(1.2) rotate(240deg);
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      top: -30px;
+      z-index: 30;
+      pointer-events: none;
+      font-size: 20px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(115vh) rotate(720deg); }
+    }
+
+    .burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 25;
+      animation: burstAway 0.85s ease-out forwards;
+    }
+
+    @keyframes burstAway {
+      from { opacity: 1; transform: translate(0,0) scale(0.6); }
+      to { opacity: 0; transform: translate(var(--x), var(--y)) scale(1.25); }
+    }
+
+
+    .item-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .item-btn img {
+      width: 31px;
+      height: 31px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 4px rgba(66, 38, 20, 0.14));
+    }
+
+    .level-up-pop {
+      position: fixed;
+      z-index: 80;
+      pointer-events: none;
+      font-size: 19px;
+      font-weight: 900;
+      color: #fff2a6;
+      text-shadow:
+        -2px -2px 0 #8c4f12,
+         2px -2px 0 #8c4f12,
+        -2px  2px 0 #8c4f12,
+         2px  2px 0 #8c4f12;
+      animation: levelUpFloat 1s ease-out forwards;
+    }
+
+    @keyframes levelUpFloat {
+      from {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(0.9);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -65px) scale(1.12);
+      }
+    }
+
+    .pet-action-flash {
+      animation: petActionFlash 0.48s ease;
+    }
+
+    @keyframes petActionFlash {
+      0%, 100% { filter: drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14)); }
+      45% {
+        filter:
+          drop-shadow(0 0 13px rgba(255, 230, 95, 0.95))
+          drop-shadow(0 12px 14px rgba(64, 39, 52, 0.14));
+      }
+    }
+
+    #envelope {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      width: 118px !important;
+      height: auto !important;
+      margin: 18px auto 4px;
+      cursor: pointer;
+      position: relative;
+      animation: envelopeFloat 1.8s ease-in-out infinite;
+    }
+
+    #envelope::before,
+    #envelope::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    #envelope img {
+      width: 100%;
+      height: auto;
+      display: block;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 10px 12px rgba(74, 42, 25, 0.16));
+    }
+
+
+    /* POST-PET-QUEST SLIDE NAVIGATION */
+    .slide-nav {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .slide-arrow {
+      width: 48px;
+      height: 42px;
+      border: 3px solid var(--brown);
+      border-radius: 12px;
+      background: linear-gradient(#fff4ab, #f4b541);
+      box-shadow:
+        0 4px 0 var(--brown-dark),
+        inset 0 2px 0 rgba(255,255,255,0.65);
+      color: #6a3818;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform .1s ease, filter .1s ease, opacity .1s ease;
+    }
+
+    .slide-arrow:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.04);
+      filter: brightness(1.06);
+    }
+
+    .slide-arrow:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow:
+        0 1px 0 var(--brown-dark),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .slide-arrow:disabled {
+      opacity: 0.3;
+      cursor: default;
+      filter: grayscale(0.45);
+    }
+
+    .slide-counter {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: #87542b;
+      letter-spacing: .35px;
+    }
+
+    .quest-slide-nav {
+      padding: 0;
+      margin: 0;
+      min-width: 145px;
+    }
+
+    /* Make the newly unlocked quest button unmistakable. */
+    .letter-quest-btn {
+      position: relative;
+      overflow: visible;
+      border-color: #2a77b0 !important;
+      animation:
+        newQuestPulse 1.55s ease-in-out infinite,
+        newQuestBob 2.6s ease-in-out infinite;
+      box-shadow:
+        0 5px 0 #315b7a,
+        0 0 0 3px rgba(130, 218, 255, 0.35),
+        0 0 18px rgba(84, 198, 255, 0.72),
+        inset 0 2px 0 rgba(255,255,255,0.72) !important;
+    }
+
+    .letter-quest-btn::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 3px solid rgba(255, 232, 100, 0.95);
+      border-radius: 16px;
+      pointer-events: none;
+      animation: questBorderRing 1.55s ease-out infinite;
+    }
+
+    @keyframes newQuestPulse {
+      0%, 100% {
+        filter: brightness(1);
+        box-shadow:
+          0 5px 0 #315b7a,
+          0 0 0 3px rgba(130, 218, 255, 0.28),
+          0 0 12px rgba(84, 198, 255, 0.55),
+          inset 0 2px 0 rgba(255,255,255,0.72);
+      }
+      50% {
+        filter: brightness(1.12);
+        box-shadow:
+          0 5px 0 #315b7a,
+          0 0 0 5px rgba(255, 226, 92, 0.38),
+          0 0 28px rgba(84, 198, 255, 0.95),
+          inset 0 2px 0 rgba(255,255,255,0.82);
+      }
+    }
+
+    @keyframes questBorderRing {
+      0% {
+        opacity: .9;
+        transform: scale(.98);
+      }
+      75%, 100% {
+        opacity: 0;
+        transform: scale(1.11);
+      }
+    }
+
+    @keyframes newQuestBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    @media (max-width: 760px) {
+      .quest-window {
+        width: min(96vw, 760px);
+        height: calc(100dvh - 20px);
+        max-height: calc(100dvh - 20px);
+      }
+
+      .quest-footer {
+        gap: 8px;
+        padding: 8px 10px;
+      }
+
+      .quest-status {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+
+      #letter {
+        max-height: calc(90dvh - 78px);
+        padding: 14px;
+      }
+
+      .letter-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .letter-side { order: -1; }
+
+      #gfSprite { max-width: 120px; }
+    }
+  
+    /* =========================
+       MOBILE-FIRST OPTIMIZATION
+       ========================= */
+
+    html {
+      width: 100%;
+      height: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100dvh;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .game-shell {
+      min-height: 100dvh;
+      padding:
+        max(12px, env(safe-area-inset-top))
+        max(10px, env(safe-area-inset-right))
+        max(12px, env(safe-area-inset-bottom))
+        max(10px, env(safe-area-inset-left));
+    }
+
+    .game-card {
+      width: min(100%, 520px);
+      max-height: calc(
+        100dvh
+        - max(12px, env(safe-area-inset-top))
+        - max(12px, env(safe-area-inset-bottom))
+      );
+    }
+
+    #letter {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quest-body {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (max-width: 640px) {
+      .game-shell {
+        align-items: center;
+        padding:
+          max(8px, env(safe-area-inset-top))
+          max(8px, env(safe-area-inset-right))
+          max(8px, env(safe-area-inset-bottom))
+          max(8px, env(safe-area-inset-left));
+      }
+
+      .game-card {
+        width: 100%;
+        max-height: calc(
+          100dvh
+          - max(8px, env(safe-area-inset-top))
+          - max(8px, env(safe-area-inset-bottom))
+        );
+        padding: 14px 12px 14px;
+        border-width: 3px;
+        border-radius: 18px;
+        box-shadow:
+          0 5px 0 var(--brown-dark),
+          0 12px 24px rgba(0,0,0,0.22),
+          inset 0 0 0 2px rgba(255,255,255,0.6);
+      }
+
+      .game-card::before {
+        inset: 6px;
+        border-radius: 13px;
+      }
+
+      .title-badge {
+        margin: -26px auto 8px;
+        padding: 7px 15px;
+        border-width: 2px;
+        border-radius: 14px;
+        font-size: 14px;
+      }
+
+      .subheading {
+        font-size: 12px;
+        margin-bottom: 7px;
+      }
+
+      .scene-box {
+        min-height: 170px;
+        margin-bottom: 9px;
+      }
+
+      #egg {
+        width: min(118px, 30vw);
+      }
+
+      #petSprite {
+        width: min(132px, 35vw);
+        max-width: none;
+      }
+
+      .pet-label {
+        top: -12px;
+        right: -7px;
+        padding: 3px 7px;
+        border-width: 2px;
+        font-size: 11px;
+      }
+
+      .pet-name {
+        margin-top: 5px;
+        font-size: 12px;
+      }
+
+      #dialogue {
+        min-height: 62px;
+        margin-bottom: 10px;
+        padding: 11px 12px;
+        border-width: 2px;
+        border-radius: 13px;
+        font-size: 15px;
+      }
+
+      #dialogue::before {
+        font-size: 18px;
+        top: -12px;
+      }
+
+      #controls {
+        width: 100%;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .game-btn {
+        min-width: 0;
+        min-height: 48px;
+        padding: 10px 12px;
+        border-width: 2px;
+        border-radius: 11px;
+        font-size: 13px;
+      }
+
+      #controls .game-btn {
+        flex: 1 1 calc(50% - 4px);
+      }
+
+      .item-btn img {
+        width: 27px;
+        height: 27px;
+      }
+
+      #envelope {
+        width: 96px !important;
+        margin-top: 12px;
+      }
+
+      /* Letter view: prioritize the actual letter text on phones. */
+      #letter {
+        max-height: calc(
+          100dvh
+          - max(8px, env(safe-area-inset-top))
+          - max(8px, env(safe-area-inset-bottom))
+          - 54px
+        );
+        padding: 12px;
+        border-width: 3px;
+        border-radius: 14px;
+      }
+
+      .letter-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .letter-main {
+        order: 1;
+      }
+
+      .letter-main h2 {
+        margin-bottom: 9px;
+        font-size: 22px;
+      }
+
+      .letter-main p {
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .letter-side {
+        order: 2;
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        gap: 8px;
+        align-items: stretch;
+        width: 100%;
+        padding-top: 2px;
+      }
+
+      .pet-home-btn {
+        top: -6px;
+        right: -6px;
+        left: auto;
+        width: 42px;
+        height: 42px;
+        padding: 4px;
+        border-width: 2px;
+        border-radius: 10px;
+      }
+
+      .sprite-frame {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        width: 74px;
+        padding: 6px;
+        border-width: 2px;
+        border-radius: 12px;
+      }
+
+      #gfSprite {
+        width: 58px;
+        max-width: 58px;
+      }
+
+      .sprite-caption {
+        display: none;
+      }
+
+      .mini-note {
+        grid-column: 2;
+        width: 100%;
+        padding: 8px 9px;
+        border-width: 2px;
+        border-radius: 10px;
+        font-size: 11px;
+      }
+
+      .letter-quest-btn {
+        grid-column: 2;
+        min-height: 42px;
+        margin-top: 0;
+      }
+
+      /* Quest modal: use the full phone viewport and show actionable content first. */
+      .modal-backdrop {
+        padding:
+          max(6px, env(safe-area-inset-top))
+          max(6px, env(safe-area-inset-right))
+          max(6px, env(safe-area-inset-bottom))
+          max(6px, env(safe-area-inset-left));
+      }
+
+      .quest-window {
+        width: 100%;
+        height: calc(
+          100dvh
+          - max(6px, env(safe-area-inset-top))
+          - max(6px, env(safe-area-inset-bottom))
+        );
+        max-height: none;
+        border-width: 3px;
+        border-radius: 12px;
+      }
+
+      .quest-topbar {
+        min-height: 42px;
+        padding: 6px 9px;
+      }
+
+      .window-x {
+        width: 32px;
+        height: 32px;
+      }
+
+      .quest-tabs {
+        gap: 3px;
+        padding: 6px 6px 0;
+      }
+
+      .quest-tab {
+        flex: 1 1 0;
+        padding: 6px 4px;
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .quest-body {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+
+      .quest-right {
+        width: 100%;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .quest-header-card {
+        grid-template-columns: 1fr 62px;
+        padding: 9px;
+      }
+
+      .quest-header-card h3 {
+        font-size: 15px;
+      }
+
+      .quest-header-card p {
+        font-size: 11px;
+      }
+
+      .quest-icon-box {
+        padding: 5px;
+        font-size: 30px;
+      }
+
+      .quest-summary {
+        padding: 9px;
+      }
+
+      .quest-summary-title {
+        margin-bottom: 7px;
+        font-size: 21px;
+      }
+
+      .quest-summary p {
+        margin-bottom: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .add-objective-panel {
+        margin: 9px 0 8px;
+        padding: 8px;
+      }
+
+      .add-objective-title {
+        font-size: 11px;
+      }
+
+      .add-objective-controls {
+        gap: 5px;
+      }
+
+      #newObjectiveInput {
+        height: 40px;
+        font-size: 12px;
+      }
+
+      #addObjectiveButton {
+        min-width: 66px;
+        height: 40px;
+      }
+
+      .objective-list {
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .objective {
+        min-height: 44px;
+        padding: 8px;
+        gap: 8px;
+        font-size: 12px;
+      }
+
+      .objective input {
+        width: 20px;
+        height: 20px;
+      }
+
+      .remove-objective-btn {
+        width: 28px;
+        height: 28px;
+        right: 6px;
+      }
+
+      .left-progress-item {
+        min-height: 40px;
+        padding: 7px 8px;
+        font-size: 11px;
+      }
+
+      .quest-footer {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 7px 8px
+          max(7px, env(safe-area-inset-bottom));
+      }
+
+      .quest-slide-nav {
+        min-width: 0;
+        flex: 0 0 auto;
+      }
+
+      .slide-arrow {
+        width: 44px;
+        height: 40px;
+      }
+
+      .slide-counter {
+        display: none;
+      }
+
+      .quest-footer-actions {
+        flex: 1 1 auto;
+        justify-content: flex-end;
+      }
+
+      .footer-btn {
+        min-width: 84px;
+        min-height: 40px;
+        padding: 7px 8px;
+        font-size: 11px;
+      }
+
+      #questCompleteMessage {
+        padding: 10px 11px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .game-card {
+        padding-left: 9px;
+        padding-right: 9px;
+      }
+
+      #controls {
+        flex-direction: column;
+      }
+
+      #controls .game-btn {
+        width: 100%;
+        flex-basis: auto;
+      }
+
+      .letter-side {
+        grid-template-columns: 64px 1fr;
+      }
+
+      .sprite-frame {
+        width: 64px;
+      }
+
+      #gfSprite {
+        width: 50px;
+        max-width: 50px;
+      }
+
+      .quest-footer-actions {
+        width: 100%;
+      }
+
+      .footer-btn {
+        flex: 1 1 0;
+      }
+    }
+
+    /* Landscape phones: keep the card usable without overflowing browser chrome. */
+    @media (max-height: 520px) and (orientation: landscape) {
+      .game-shell {
+        align-items: flex-start;
+      }
+
+      .game-card {
+        max-height: calc(100dvh - 12px);
+      }
+
+      .scene-box {
+        min-height: 120px;
+      }
+
+      #petSprite {
+        width: 100px;
+      }
+
+      #dialogue {
+        min-height: 52px;
+        padding: 8px 10px;
+      }
+
+      #letter {
+        max-height: calc(100dvh - 48px);
+      }
+    }
+
+    /* Respect reduced-motion preferences. */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="bg-scene"></div>
+  <div class="bg-overlay"></div>
+
+  <div class="petal" style="left:8%; animation-duration:11s; animation-delay:-2s;">✿</div>
+  <div class="petal" style="left:20%; animation-duration:13s; animation-delay:-6s;">✿</div>
+  <div class="petal" style="left:33%; animation-duration:10s; animation-delay:-1s;">❀</div>
+  <div class="petal" style="left:47%; animation-duration:14s; animation-delay:-8s;">✿</div>
+  <div class="petal" style="left:62%; animation-duration:12s; animation-delay:-3s;">❀</div>
+  <div class="petal" style="left:76%; animation-duration:15s; animation-delay:-10s;">✿</div>
+  <div class="petal" style="left:89%; animation-duration:11s; animation-delay:-4s;">❀</div>
+
+  <main class="game-shell">
+    <section class="game-card">
+      <div class="title-badge">Birthday Quest ✿</div>
+      <div class="subheading" id="mainSubheading">A surprise is waiting...</div>
+
+      <div class="scene-box" id="sceneBox">
+        <div id="eggArea">
+          <img id="egg" src="egg.png" alt="mystery egg" />
+          <div class="egg-shadow"></div>
+        </div>
+
+        <div id="petArea">
+          <div class="pet-wrap">
+            <div class="pet-ground-shadow"></div>
+            <img id="petSprite" src="pet-headphones.png" alt="Bean, the pink headphone companion" />
+            <div class="pet-label" id="petLevelLabel">Bean • Lv. 1</div>
+            <div class="pet-name">Bean</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dialogue">
+        Something has been waiting for you beneath the cherry blossoms...
+      </div>
+
+      <div id="controls">
+        <button class="game-btn alt item-btn" onclick="trainPet()">
+          <img src="petfood1.png" alt="" />
+          <span>Train Pet</span>
+        </button>
+
+        <button class="game-btn item-btn" onclick="feedPet()">
+          <img src="petfood2.png" alt="" />
+          <span>Feed Pet</span>
+        </button>
+      </div>
+
+      <div id="envelope" onclick="openLetter()" aria-label="open birthday letter"><img src="mail.png" alt="special letter" /></div>
+
+      <div id="letter">
+        <div class="letter-layout">
+          <div class="letter-main">
+            <h2>Happy Birthday ❤️</h2>
+
+            <p><strong>Dear Brit Knee,</strong></p>
+
+            <p>
+              Happy birthday, sweetheart. While making this gift for you, I reminisced on the memories of us. 
+              You're someone that's made me want to pull my hair out but also eat you up, all at once. But after all, I write this with love.
+              As you know, I have an oddly singular focus when it comes to you. A sort of obsessive desire to see you succeed.
+              I truly hope you blossom into the dewiest, most colorful flower you are. It'd be a shame to the world if you stayed in your bud.
+              In support of this dream, I wanted to make you something fun and cute that could be a constant reminder and motivator to keep you on track,
+              and to bring you luck.
+            </p>
+
+            <p>
+              Along with your monster pet "bean" that you can bring around with you for GREAT luck, I've created a new quest to help you keep on top of your goals.
+              I hope it's useful. If not... that's okay too. Either way, all of the small things will pay off for you, I know it. I hope that you know what I'm talking about by now.
+              As the famous quote goes, "Luck is when preparation meets opportunity." When the right opportunity comes to you, I hope that you'll be prepared to seize it.
+              So ultimately, this is a gift that I hope you'll dispose of eventually. If there's any soppy words, I may or may not tell them to you in-person. 
+              But I will write that I wish we could have hugged more. And all the other stuff too. Maybe I would have been less mean.
+              Regardless, as of now, I love you and wish you a very happy birthday.  
+            </p>
+
+            <p>
+              I hope this year brings you nothing but happiness, peace, and so many moments that
+              make you smile.
+            </p>
+
+            <p>
+              - Kyle
+            </p>
+          </div>
+
+          <button class="pet-home-btn" type="button" onclick="returnToPetQuest()" aria-label="Back to pet quest">
+            <img src="pet-headphones.png" alt="" />
+          </button>
+
+          <aside class="letter-side">
+            <div class="sprite-frame">
+              <img id="gfSprite" src="gf-maple.png" alt="birthday girl character" />
+              <div class="sprite-caption">Birthday Heroine ✨</div>
+            </div>
+
+            <div class="mini-note">
+              You unlocked a special spring festival message 💌
+            </div>
+
+            <button class="game-btn blue letter-quest-btn" onclick="goToQuestSlide()">
+              New Quest 📜
+            </button>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="questModal">
+    <div class="quest-window" role="dialog" aria-modal="true" aria-labelledby="questWindowTitle">
+      <div class="quest-topbar">
+        <div id="questWindowTitle">Quest</div>
+        <button class="window-x" onclick="closeQuestModal()">×</button>
+      </div>
+
+      <div class="quest-tabs">
+        <div class="quest-tab">AVAILABLE</div>
+        <div class="quest-tab active">IN PROGRESS</div>
+        <div class="quest-tab">COMPLETED</div>
+      </div>
+
+      <div class="quest-body">
+        <div class="quest-right">
+          <div class="quest-header-card">
+            <div>
+              <h3>[Birthday Quest] Find the Dream Job</h3>
+              <p>Job Search Quest</p>
+              <p>Level 1+</p>
+            </div>
+            <div class="quest-icon-box">💼</div>
+          </div>
+
+          <div class="quest-summary">
+            <div class="quest-summary-title">Quest Summary</div>
+
+            <p>
+              A very important heroine is preparing for her next great adventure.
+              Help her complete the tasks below to unlock her dream job.
+            </p>
+
+            <p>
+              Complete each objective, gain confidence EXP, and claim the reward:
+              <strong>one step closer to the perfect role</strong>.
+            </p>
+
+            <div class="quest-section quest-summary-active">
+              <div class="section-header">Birthday Career Quest (1)</div>
+              <div class="quest-item selected">
+                <span>[Birthday Quest] Find the Dream Job</span>
+                <span class="badge-mini">ACTIVE</span>
+              </div>
+            </div>
+
+            <div class="add-objective-panel">
+              <div class="add-objective-title">
+                Add Your Own Quest Objective
+                <span id="objectiveLimitText">10 / 20</span>
+              </div>
+
+              <div class="add-objective-controls">
+                <input
+                  id="newObjectiveInput"
+                  type="text"
+                  maxlength="80"
+                  placeholder="Type a new objective..."
+                  aria-label="New quest objective"
+                />
+                <button id="addObjectiveButton" type="button" onclick="addCustomObjective()">
+                  + ADD
+                </button>
+              </div>
+
+              <div id="objectiveAddMessage" class="objective-add-message"></div>
+            </div>
+
+            <div class="objective-list" id="objectiveList">
+              <label class="objective" data-objective-index="0"><input type="checkbox" /><span>Polish LinkedIn Profile</span></label>
+              <label class="objective" data-objective-index="1"><input type="checkbox" /><span>Get 500+ connections on LinkedIn</span></label>
+              <label class="objective" data-objective-index="2"><input type="checkbox" /><span>Update Resume</span></label>
+              <label class="objective" data-objective-index="3"><input type="checkbox" /><span>Practice STAR Interview Answers</span></label>
+              <label class="objective" data-objective-index="4"><input type="checkbox" /><span>Reach Out to Recruiters/ Hiring Managers</span></label>
+              <label class="objective" data-objective-index="5"><input type="checkbox" /><span>Follow Up After Applying</span></label>
+              <label class="objective" data-objective-index="6"><input type="checkbox" /><span>Draft Strong Cover Letters</span></label>
+              <label class="objective" data-objective-index="7"><input type="checkbox" /><span>Think strategically and be shrewd!</span></label>
+              <label class="objective" data-objective-index="8"><input type="checkbox" /><span>Advocate for yourself</span></label>
+              <label class="objective" data-objective-index="9"><input type="checkbox" /><span>Don't Give Up</span></label>
+            </div>
+
+            <div class="quest-progress-wrap">
+              Progress: <span id="questProgressText">0 / 10 completed</span>
+              <div class="progress-bar">
+                <div class="progress-fill" id="questProgressBar"></div>
+              </div>
+            </div>
+
+            <div class="quest-reward">
+              Reward: +100 Confidence EXP, +1 Dream Job Charm, and unlimited birthday encouragement 💖
+            </div>
+
+            <div id="questCompleteMessage">
+              Quest Complete! ✨ You are officially one step closer to the dream job.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-footer">
+        <div class="quest-status">Stay brave, stay cute, and clear every objective 💫</div>
+
+        <div class="slide-nav quest-slide-nav" aria-label="Back to birthday letter">
+          <button class="slide-arrow" type="button" onclick="goToLetterSlide()" aria-label="Back to letter">←</button>
+          <div class="slide-counter">Back to letter</div>
+        </div>
+
+        <div class="quest-footer-actions">
+          <button class="footer-btn" onclick="markAllObjectives()">MARK ALL</button>
+          <button class="footer-btn secondary" onclick="closeQuestModal()">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let petLevel = 1;
+    let hatched = false;
+    let questWasComplete = false;
+
+    const egg = document.getElementById("egg");
+    const eggArea = document.getElementById("eggArea");
+    const petArea = document.getElementById("petArea");
+    const petSprite = document.getElementById("petSprite");
+    const petLevelLabel = document.getElementById("petLevelLabel");
+    const dialogue = document.getElementById("dialogue");
+    const mainSubheading = document.getElementById("mainSubheading");
+    const sceneBox = document.getElementById("sceneBox");
+    const controls = document.getElementById("controls");
+    const envelope = document.getElementById("envelope");
+    const letter = document.getElementById("letter");
+    const questModal = document.getElementById("questModal");
+    const objectiveList = document.getElementById("objectiveList");
+    const leftProgressList = document.getElementById("leftProgressList");
+    const newObjectiveInput = document.getElementById("newObjectiveInput");
+    const addObjectiveButton = document.getElementById("addObjectiveButton");
+    const objectiveLimitText = document.getElementById("objectiveLimitText");
+    const objectiveAddMessage = document.getElementById("objectiveAddMessage");
+    const questProgressText = document.getElementById("questProgressText");
+    const questProgressBar = document.getElementById("questProgressBar");
+    const questCompleteMessage = document.getElementById("questCompleteMessage");
+
+    if (egg) {
+      egg.addEventListener("click", hatch);
+    }
+
+    const MAX_QUEST_OBJECTIVES = 20;
+    const BASE_QUEST_OBJECTIVE_COUNT = 10;
+    const CUSTOM_OBJECTIVES_STORAGE_KEY = "birthdayQuestCustomObjectives";
+    const COMPLETED_OBJECTIVES_STORAGE_KEY = "birthdayQuestCompletedObjectives";
+
+    let questObjectiveLabels = [
+      'Polish LinkedIn Profile',
+      'Get 500+ connections on LinkedIn',
+      'Update Resume',
+      'Practice STAR Interview Answers',
+      'Reach Out to Recruiters/ Hiring Managers',
+      'Follow Up After Applying',
+      'Draft Strong Cover Letters',
+      'Think strategically and be shrewd!',
+      'Advocate for yourself',
+      "Don't Give Up"
+    ];
+
+    function getObjectiveCheckboxes() {
+      return [...objectiveList.querySelectorAll('input[type="checkbox"]')];
+    }
+
+    function readStoredCustomObjectives() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(CUSTOM_OBJECTIVES_STORAGE_KEY) || "[]");
+        return Array.isArray(stored)
+          ? stored
+              .filter(item => typeof item === "string")
+              .map(item => item.trim())
+              .filter(Boolean)
+              .slice(0, MAX_QUEST_OBJECTIVES - BASE_QUEST_OBJECTIVE_COUNT)
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function readStoredCompletedObjectives() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(COMPLETED_OBJECTIVES_STORAGE_KEY) || "[]");
+        return Array.isArray(stored) ? stored.filter(item => typeof item === "string") : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCustomObjectives() {
+      const customObjectives = questObjectiveLabels.slice(BASE_QUEST_OBJECTIVE_COUNT);
+      localStorage.setItem(CUSTOM_OBJECTIVES_STORAGE_KEY, JSON.stringify(customObjectives));
+    }
+
+    function saveCompletedObjectives() {
+      const completed = getObjectiveCheckboxes()
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.closest(".objective")?.querySelector("span")?.textContent?.trim())
+        .filter(Boolean);
+
+      localStorage.setItem(COMPLETED_OBJECTIVES_STORAGE_KEY, JSON.stringify(completed));
+    }
+
+    function updateObjectiveLimitUI() {
+      const total = questObjectiveLabels.length;
+      objectiveLimitText.textContent = `${total} / ${MAX_QUEST_OBJECTIVES}`;
+      addObjectiveButton.disabled = total >= MAX_QUEST_OBJECTIVES;
+      newObjectiveInput.disabled = total >= MAX_QUEST_OBJECTIVES;
+
+      if (total >= MAX_QUEST_OBJECTIVES) {
+        objectiveAddMessage.textContent = "Maximum of 20 quest objectives reached.";
+        objectiveAddMessage.className = "objective-add-message";
+      } else if (objectiveAddMessage.textContent === "Maximum of 20 quest objectives reached.") {
+        objectiveAddMessage.textContent = "";
+        objectiveAddMessage.className = "objective-add-message";
+      }
+    }
+
+    function buildObjectiveList() {
+      const completedLabels = new Set(readStoredCompletedObjectives());
+      objectiveList.innerHTML = "";
+
+      questObjectiveLabels.forEach((label, index) => {
+        const row = document.createElement("label");
+        row.className = "objective";
+        row.dataset.objectiveIndex = index;
+
+        if (index >= BASE_QUEST_OBJECTIVE_COUNT) {
+          row.classList.add("custom-objective");
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = completedLabels.has(label);
+
+        const text = document.createElement("span");
+        text.textContent = label;
+
+        row.appendChild(checkbox);
+        row.appendChild(text);
+
+        if (index >= BASE_QUEST_OBJECTIVE_COUNT) {
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "remove-objective-btn";
+          removeButton.textContent = "×";
+          removeButton.setAttribute("aria-label", `Remove ${label}`);
+          removeButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            removeCustomObjective(index);
+          });
+          row.appendChild(removeButton);
+        }
+
+        objectiveList.appendChild(row);
+      });
+
+      buildLeftProgressList();
+      updateObjectiveLimitUI();
+      updateQuestProgress();
+    }
+
+    function buildLeftProgressList() {
+      if (!leftProgressList) return;
+
+      leftProgressList.innerHTML = "";
+
+      questObjectiveLabels.forEach((label, index) => {
+        const row = document.createElement("div");
+        row.className = "left-progress-item";
+        row.dataset.objectiveIndex = index;
+
+        if (index >= BASE_QUEST_OBJECTIVE_COUNT) {
+          row.classList.add("custom-progress");
+        }
+
+        const check = document.createElement("span");
+        check.className = "left-progress-check";
+
+        const text = document.createElement("span");
+        text.className = "left-progress-label";
+        text.textContent = label;
+
+        row.appendChild(check);
+        row.appendChild(text);
+        leftProgressList.appendChild(row);
+      });
+    }
+
+    function addCustomObjective() {
+      const label = newObjectiveInput.value.trim();
+
+      objectiveAddMessage.className = "objective-add-message";
+
+      if (!label) {
+        objectiveAddMessage.textContent = "Enter an objective first.";
+        objectiveAddMessage.classList.add("error");
+        newObjectiveInput.focus();
+        return;
+      }
+
+      if (questObjectiveLabels.length >= MAX_QUEST_OBJECTIVES) {
+        objectiveAddMessage.textContent = "Maximum of 20 quest objectives reached.";
+        objectiveAddMessage.classList.add("error");
+        return;
+      }
+
+      const duplicate = questObjectiveLabels.some(
+        existing => existing.toLowerCase() === label.toLowerCase()
+      );
+
+      if (duplicate) {
+        objectiveAddMessage.textContent = "That objective is already on the quest.";
+        objectiveAddMessage.classList.add("error");
+        return;
+      }
+
+      questObjectiveLabels.push(label);
+      saveCustomObjectives();
+
+      newObjectiveInput.value = "";
+      objectiveAddMessage.textContent = "New quest objective added! ✨";
+      objectiveAddMessage.classList.add("success");
+
+      buildObjectiveList();
+    }
+
+    function removeCustomObjective(index) {
+      if (index < BASE_QUEST_OBJECTIVE_COUNT || index >= questObjectiveLabels.length) return;
+
+      const removedLabel = questObjectiveLabels[index];
+      questObjectiveLabels.splice(index, 1);
+
+      const completed = readStoredCompletedObjectives()
+        .filter(label => label !== removedLabel);
+      localStorage.setItem(COMPLETED_OBJECTIVES_STORAGE_KEY, JSON.stringify(completed));
+
+      saveCustomObjectives();
+      objectiveAddMessage.textContent = "Custom objective removed.";
+      objectiveAddMessage.className = "objective-add-message";
+
+      buildObjectiveList();
+    }
+
+    objectiveList.addEventListener("change", (event) => {
+      if (event.target.matches('input[type="checkbox"]')) {
+        updateQuestProgress();
+        saveCompletedObjectives();
+      }
+    });
+
+    newObjectiveInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addCustomObjective();
+      }
+    });
+
+    const storedCustomObjectives = readStoredCustomObjectives();
+    questObjectiveLabels = [
+      ...questObjectiveLabels,
+      ...storedCustomObjectives.filter(custom =>
+        !questObjectiveLabels.some(base => base.toLowerCase() === custom.toLowerCase())
+      )
+    ].slice(0, MAX_QUEST_OBJECTIVES);
+
+    buildObjectiveList();
+
+    function hatch(event) {
+      if (hatched || !egg || !eggArea || !petArea) return;
+      hatched = true;
+
+      egg.classList.add("egg-crack");
+      dialogue.textContent = "The egg is shaking beneath the blossoms...!";
+
+      sparkleBurst(
+        event?.clientX || window.innerWidth / 2,
+        event?.clientY || window.innerHeight / 2,
+        12
+      );
+
+      setTimeout(() => {
+        dialogue.textContent = "CRACK... ✨";
+      }, 700);
+
+      setTimeout(() => {
+        eggArea.style.display = "none";
+        petArea.style.display = "grid";
+        controls.style.display = "flex";
+        dialogue.textContent = "Bean appeared! ✨";
+        sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 16);
+      }, 1300);
+
+      setTimeout(() => {
+        dialogue.textContent = "Train or feed your pet. Reach Lv. 10 to unlock your letter! 🎂";
+      }, 2350);
+    }
+
+    function trainPet() {
+      increasePetLevel(2, "Training complete! +2 levels 💪✨");
+    }
+
+    function feedPet() {
+      increasePetLevel(1, "Yum! +1 level 🍬✨");
+    }
+
+    function increasePetLevel(amount, message) {
+      const previousLevel = petLevel;
+      petLevel += amount;
+
+      petLevelLabel.textContent = `Bean • Lv. ${petLevel}`;
+      dialogue.textContent = message;
+
+      petSprite.classList.remove("bounce", "pet-action-flash");
+      void petSprite.offsetWidth;
+      petSprite.classList.add("bounce", "pet-action-flash");
+
+      showLevelUp(amount);
+      sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 8);
+
+      if (previousLevel < 10 && petLevel >= 10) {
+        unlockLetter();
+      }
+    }
+
+    function showLevelUp(amount) {
+      const rect = petSprite.getBoundingClientRect();
+      const pop = document.createElement("div");
+      pop.className = "level-up-pop";
+      pop.textContent = `+${amount} LV`;
+
+      pop.style.left = (rect.left + rect.width / 2) + "px";
+      pop.style.top = (rect.top + 12) + "px";
+
+      document.body.appendChild(pop);
+      setTimeout(() => pop.remove(), 1000);
+    }
+
+    function unlockLetter() {
+      envelope.style.display = "block";
+      dialogue.textContent = "Lv. 10 reached! You unlocked a special letter 💌";
+      sparkleBurst(window.innerWidth / 2, window.innerHeight / 2, 18);
+    }
+
+    function openLetter() {
+      petArea.style.display = "none";
+      controls.style.display = "none";
+      envelope.style.display = "none";
+      dialogue.style.display = "none";
+
+      if (sceneBox) {
+        sceneBox.style.display = "none";
+      }
+
+      if (mainSubheading) {
+        mainSubheading.style.display = "none";
+      }
+
+      letter.style.display = "block";
+      letter.scrollTop = 0;
+
+      launchConfetti();
+    }
+
+    function openQuestModal() {
+      questModal.classList.add("show");
+      updateQuestProgress();
+    }
+
+    function closeQuestModal() {
+      questModal.classList.remove("show");
+    }
+
+    function goToQuestSlide() {
+      openQuestModal();
+    }
+
+    function goToLetterSlide() {
+      closeQuestModal();
+
+      if (sceneBox) {
+        sceneBox.style.display = "none";
+      }
+
+      if (mainSubheading) {
+        mainSubheading.style.display = "none";
+      }
+
+      dialogue.style.display = "none";
+      controls.style.display = "none";
+      envelope.style.display = "none";
+      letter.style.display = "block";
+      letter.scrollTop = 0;
+    }
+
+    function returnToPetQuest() {
+      letter.style.display = "none";
+
+      if (sceneBox) {
+        sceneBox.style.display = "grid";
+      }
+
+      if (mainSubheading) {
+        mainSubheading.style.display = "block";
+        mainSubheading.textContent = "A surprise is waiting...";
+      }
+
+      dialogue.style.display = "grid";
+      petArea.style.display = "grid";
+      controls.style.display = "flex";
+
+      if (petLevel >= 10) {
+        envelope.style.display = "block";
+        dialogue.textContent = "Lv. 10 reached! Your special letter is unlocked 💌";
+      } else {
+        envelope.style.display = "none";
+        dialogue.textContent = "Train or feed your pet. Reach Lv. 10 to unlock your letter! 🎂";
+      }
+
+    }
+
+    function markAllObjectives() {
+      getObjectiveCheckboxes().forEach((checkbox) => {
+        checkbox.checked = true;
+      });
+
+      updateQuestProgress();
+      saveCompletedObjectives();
+      launchConfetti();
+    }
+
+
+    function celebrateQuestCompletion() {
+      questCompleteMessage.classList.remove("quest-complete-pop");
+      void questCompleteMessage.offsetWidth;
+      questCompleteMessage.classList.add("quest-complete-pop");
+
+      const rect = questCompleteMessage.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const symbols = ["✨", "⭐", "🌸", "💖", "🎉"];
+
+      for (let i = 0; i < 22; i++) {
+        const piece = document.createElement("div");
+        piece.className = "quest-complete-burst";
+        piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 70 + Math.random() * 130;
+
+        piece.style.left = cx + "px";
+        piece.style.top = cy + "px";
+        piece.style.setProperty("--x", Math.cos(angle) * distance + "px");
+        piece.style.setProperty("--y", Math.sin(angle) * distance + "px");
+
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 1250);
+      }
+
+      sparkleBurst(cx, cy, 20);
+    }
+
+    function updateQuestProgress() {
+      const objectiveCheckboxes = getObjectiveCheckboxes();
+      const total = objectiveCheckboxes.length;
+      let completed = 0;
+
+      objectiveCheckboxes.forEach((checkbox, index) => {
+        const row = checkbox.closest(".objective");
+        const leftRow = leftProgressList
+          ? leftProgressList.querySelector(`[data-objective-index="${index}"]`)
+          : null;
+        const leftCheck = leftRow
+          ? leftRow.querySelector(".left-progress-check")
+          : null;
+
+        if (checkbox.checked) {
+          completed++;
+          row.classList.add("done");
+
+          if (leftRow) leftRow.classList.add("complete");
+          if (leftCheck) leftCheck.textContent = "✓";
+        } else {
+          row.classList.remove("done");
+
+          if (leftRow) leftRow.classList.remove("complete");
+          if (leftCheck) leftCheck.textContent = "";
+        }
+      });
+
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+      questProgressText.textContent = `${completed} / ${total} completed`;
+      questProgressBar.style.width = percent + "%";
+
+      const isComplete = total > 0 && completed === total;
+
+      if (isComplete) {
+        questCompleteMessage.style.display = "block";
+
+        if (!questWasComplete) {
+          celebrateQuestCompletion();
+        }
+      } else {
+        questCompleteMessage.style.display = "none";
+        questCompleteMessage.classList.remove("quest-complete-pop");
+      }
+
+      questWasComplete = isComplete;
+    }
+
+    questModal.addEventListener("click", (event) => {
+      if (event.target === questModal) {
+        closeQuestModal();
+      }
+    });
+
+    function sparkleBurst(x, y, count = 10) {
+      const symbols = ["✨", "✦", "⭐", "💖", "🌸"];
+
+      for (let i = 0; i < count; i++) {
+        const item = document.createElement("div");
+        item.className = "burst";
+        item.textContent =
+          symbols[Math.floor(Math.random() * symbols.length)];
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 40 + Math.random() * 100;
+
+        item.style.left = x + "px";
+        item.style.top = y + "px";
+        item.style.setProperty("--x", Math.cos(angle) * distance + "px");
+        item.style.setProperty("--y", Math.sin(angle) * distance + "px");
+
+        document.body.appendChild(item);
+        setTimeout(() => item.remove(), 900);
+      }
+    }
+
+    function launchConfetti() {
+      const confettiPieces = ["🎉", "✨", "💖", "🎂", "⭐", "🌸"];
+
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement("div");
+        piece.classList.add("confetti");
+
+        piece.textContent =
+          confettiPieces[Math.floor(Math.random() * confettiPieces.length)];
+
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.animationDelay = Math.random() * 1.6 + "s";
+        piece.style.animationDuration = (2.9 + Math.random() * 1.6) + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(() => {
+          piece.remove();
+        }, 5400);
+      }
+    }
+  </script>
+</body>
+</html>
